@@ -7,7 +7,9 @@ import ProjectDescription
 
 extension Project {
     /// Helper function to create the Project for this ExampleApp
-    public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
+    public static func app(name: String, 
+                           platform: Platform,
+                           additionalTargets: [String]) -> Project {
         var targets = makeAppTargets(name: name,
                                      platform: platform,
                                      dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
