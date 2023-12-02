@@ -19,8 +19,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         HedioKit.hello()
         HedioUI.hello()
-
+        
+        /// 秒数转倒计时格式
+        for value in [10, 100, 3660, 10000, 100000, 1000000, 10000000] {
+            print("value: \(value.countdown())")
+        }
+        
         return true
     }
 
 }
+
+extension Int {
+    
+    func countdown() -> String {
+        let seconds = self
+        return String(format: "%02d:%02d:%02d",
+                      seconds / 3600,
+                      seconds % 3600 / 60,
+                      seconds % 60)
+    }
+    
+}
+
