@@ -6,14 +6,22 @@ import ProjectDescription
 /// See https://docs.tuist.io/guides/helpers/
 
 extension Project {
+    
     /// Helper function to create the Project for this ExampleApp
     public static func app(name: String, 
                            platform: Platform,
                            additionalTargets: [String]) -> Project {
-        var targets = makeAppTargets(name: name,
-                                     platform: platform,
-                                     dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
-        targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
+        
+        var targets = makeAppTargets(
+            name: name,
+            platform: platform,
+            dependencies: additionalTargets.map { TargetDependency.target(name: $0) }
+        )
+        
+        targets += additionalTargets.flatMap({
+            makeFrameworkTargets(name: $0, platform: platform)
+        })
+        
         return Project(name: name,
                        organizationName: "tuist.io",
                        targets: targets)
@@ -43,12 +51,14 @@ extension Project {
     }
 
     /// Helper function to create the application target and the unit test target.
-    private static func makeAppTargets(name: String, platform: Platform, dependencies: [TargetDependency]) -> [Target] {
+    private static func makeAppTargets(name: String,
+                                       platform: Platform,
+                                       dependencies: [TargetDependency]) -> [Target] {
         let platform: Platform = platform
         let infoPlist: [String: Plist.Value] = [
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
-"UIMainStoryboardFile": "",
+            "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": "LaunchScreen"
             ]
 
