@@ -7,8 +7,6 @@
 
 import Foundation
 import ProjectDescription
-import ProjectDescriptionHelpers
-import MyPlugin
 
 // MARK: - 定义
 extension HHTarget {
@@ -22,7 +20,7 @@ extension HHTarget {
     }
     
     /// 主项目
-    enum App: String, CaseIterable {
+    public enum App: String, CaseIterable {
         case Hedio = "Hedio"
     }
     
@@ -32,7 +30,7 @@ extension HHTarget {
     }
     
     /// 依赖库
-    enum Kit: String, CaseIterable {
+    public enum Kit: String, CaseIterable {
         case Hedio = "HedioKit"
         case Web2PDF = "HHWeb2PDFKit"
         case Foundation = "HHFoundationKit"
@@ -49,6 +47,12 @@ extension HHTarget {
         case Crypto = "HHCryptoKit"
         case RouteKit = "HHRouteKit"
         case Localize = "HHLocalizeKit"
+        case Math = "HHMathKit"
+        
+        public func framework(_ dependencies: [TargetDependency] = []) -> Target {
+            HHTarget.framework(self.rawValue, dependencies)
+        }
+        
     }
     
     
@@ -98,6 +102,9 @@ extension HHTarget {
     /// 生成 `Framework` target
     static func framework(_ name: String,
                           _ dependencies: [TargetDependency]) -> Target {
+        
+        tryMakeFiles(target: name)
+        
         return Target(name: name,
                       platform: C.platform,
                       product: .framework,
@@ -106,6 +113,12 @@ extension HHTarget {
                       sources: [name.sources],
                       resources: [name.resources],
                       dependencies: dependencies)
+    }
+    
+    /// 生成 `Framework` target
+    static func framework(_ kit: Kit,
+                          _ dependencies: [TargetDependency]) -> Target {
+        Self.framework(kit.rawValue, dependencies)
     }
     
 }
@@ -125,12 +138,21 @@ extension HHTarget {
     private static func tryMakeFiles(target name: String) {
         let m = FileManager.default
         /// [目录]
+        let resources = "Targets/\(name)/Resources"
+        /// [目录]
         let path = "Targets/\(name)/Sources"
         /// [文件]
         let file = path + "/" + "\(name).swift"
         /// [文件] - 内容
         let content = "// \(name).swift\n"
+        
         do {
+            if m.fileExists(atPath: resources) == false {
+                try m.createDirectory(atPath: resources,
+                                      withIntermediateDirectories: true,
+                                      attributes: nil)
+            }
+            
             if m.fileExists(atPath: path) == false {
                 try m.createDirectory(atPath: path,
                                       withIntermediateDirectories: true,

@@ -26,4 +26,4 @@ let localHelper = LocalHelper(name: "MyPlugin")
 
 // Creates our project using a helper function defined in ProjectDescriptionHelpers
 let project = HHTarget.app(name: HHTarget.App.Hedio.rawValue,
-                           frameworks: [])
+                           frameworks: HHTarget.Kit.allCases.map { $0.framework() })
